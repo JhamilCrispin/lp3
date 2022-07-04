@@ -1,9 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <!-- arrival section starts  -->
-@if(count($trabajos)==0)
-    -no hay Mascotas Registradas
-    @endif
+
 <section class="arrival gallery"  id="gallery"><!-- id="arrival"/-->
 
     <h1 class="heading"> <span>Trabajos <button type="button" class="btn btn-success pull-right" data-bs-toggle="modal" data-bs-target="#insertModal"> <i  class="fas fa-plus-square"></i></button> </span> </h1>
@@ -15,7 +13,11 @@
         <li class="btn" data-filter="shoes">Especializado</li>
     </ul>
     <div class="box-container">
+        @if(count($trabajos)==0)
+            -no hay Mascotas Registradas
+        @endif
         @foreach ($trabajos as $trabajo)
+
         <div class="box">
             <div class="image">
                 <img src="images/arr-img1.png" alt="">

@@ -1,7 +1,6 @@
 <?php
-
+use App\Http\Controllers\TrabajoController;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,9 +13,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
-Auth::routes();
+Route::get('/trabajos/ver', [TrabajoController::class,'mostrar'])->name('trabajos.ver')->middleware('auth');
+
+Route::get('/trabajos/guardar', [TrabajoController::class,'formulario'])->name('trabajos.guardar')->middleware('auth');
+Route::post('/trabajos/guardar', [TrabajoController::class,'guardar'])->name('trabajos.guardar')->middleware('auth');
+Route::put('/trabajos/{mascota}/actualizar', [TrabajoController::class,'update'])->name('trabajos.actualizar')->middleware('auth');
+Route::delete('/trabajos/destroy/{id}', [TrabajoController::class,'destoy'])->name('trabajos.destroy')->middleware('auth');
+
+
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

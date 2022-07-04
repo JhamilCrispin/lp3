@@ -68,7 +68,7 @@
                             <label for="fechaNa" class="col-md-4 col-form-label text-md-end">{{ __('fechaNa') }}</label>
 
                             <div class="col-md-6">
-                                <input id="fechaNa" type="date" class="form-control @error('fechaNa') is-invalid @enderror" name="fechaNa" value="{{ old('fechaNa') }}" required autocomplete="email">
+                                <input id="fechaNa" type="date" class="form-control @error('fechaNa') is-invalid @enderror" name="fechaNa" value="{{ old('fechaNa') }}" required autocomplete="fechaNa">
 
                                 @error('fechaNa')
                                     <span class="invalid-feedback" role="alert">
@@ -81,7 +81,7 @@
                             <label for="tipo" class="col-md-4 col-form-label text-md-end">{{ __('tipo') }}</label>
 
                             <div class="col-md-6">
-                                <input id="tipo" type="text" class="form-control @error('tipo') is-invalid @enderror" name="tipo" value="{{ old('tipo') }}" required autocomplete="email">
+                                <input id="tipo" type="text" class="form-control @error('tipo') is-invalid @enderror" name="tipo" value="{{ old('tipo') }}" required autofocus>
 
                                 @error('tipo')
                                 <span class="invalid-feedback" role="alert">
