@@ -22,19 +22,55 @@ class TrabajoController extends Controller
         return view('trabajos.guardar');
     }
     public function guardar(Request $request,){
+        print_r($request->all());
         $request->validate([
-            "nombre"=> "required",
+            "trabajo"=> "required",
             "descripcion"=> "required",
-            "experiencia"=> "numeric|required|",
+            "experiencia"=> "required|",
             "categoria"=> "required|",
+            "precio"=> "required|",
         ]);
-        $mascotas = new Trabajo();
-        $mascotas->nombre=$request->input('nombre');
-        $mascotas->descripcion=$request->input('descripcion');
-        $mascotas->experiencia=$request->input('experiencia');
-        $mascotas->categoria=$request->input('categoria');
-        $mascotas->idUsuario=Auth::user()->id;
-        $mascotas->save();
+        $trabajos = new Trabajo();
+        if($request->hasFile('img')){
+            $file = $request->file('img');
+            $desinationPath = 'img/fotos/';
+            $filename= time().'.'.$file->getClientOriginalExtension();
+            $uploadSuccess = $request->file('img')->move($desinationPath,$filename);
+            $trabajos->img = $desinationPath.$filename;
+        }
+        $trabajos->trabajo=$request->input('trabajo');
+        $trabajos->descripcion=$request->input('descripcion');
+        $trabajos->experiencia=$request->input('experiencia');
+        $trabajos->categoria=$request->input('categoria');
+        $trabajos->precio=$request->input('precio');
+        $trabajos->idUsuario=Auth::user()->id;
+        $trabajos->save();
         return redirect("trabajos/ver")->with('success','Registro correcto');
     }
+    public function update(Request $request,$id){
+        $trabajos = Trabajo::find($id);
+
+        if($request->hasFile('img')){
+            $file = $request->file('img');
+            $desinationPath = 'img/fotos/';
+            $filename= time().'.'.$file->getClientOriginalExtension();
+            $uploadSuccess = $request->file('img')->move($desinationPath,$filename);
+            $trabajos->img = $desinationPath.$filename;
+        }
+        $trabajos->trabajo = $request->trabajo;
+        $trabajos->descripcion = $request->descripcion;
+        $trabajos->experiencia = $request->experiencia;
+        $trabajos->precio = $request->precio;
+        if ($trabajos->save()){
+            return redirect('/trabajos/ver')->with('edit','Datos Actualizados');
+        }else{
+            index();
+        }
+    }
+
+    public function destroy($id){
+        Trabajo::destroy($id);
+        return redirect("trabajos/ver")->with('destroy','Datos eliminados');
+    }
+
 }

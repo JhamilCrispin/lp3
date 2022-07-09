@@ -67,9 +67,16 @@
                     <i class="fas fa-user"></i>
                     <input type="date" name="fechaNa" value="{{ old('fechaNa') }}" required autocomplete="fechaNa"/>
                 </div>
+
+                    <select name="tipo" class="input-field" aria-label=".form-select-sm example">
+                        <option selected>Seleccionar tipo</option>
+                        <option value="empresa">empresa</option>
+                        <option value="normal">normal</option>
+                    </select>
+
                 <div class="input-field">
-                    <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Tipo" name="tipo" value="{{ old('tipo') }}" required autofocus/>
+                    <i class="fas fa-envelope"></i>
+                    <input type="text" placeholder="Nombre de una empresa" name="empresa"/>
                 </div>
                 <div class="input-field">
                     <i class="fas fa-envelope"></i>
@@ -80,7 +87,7 @@
                     <input type="password" placeholder="Repita la contraseña" name="password_confirmation" required autocomplete="new-password"/>
                 </div>
                 <input type="submit" class="btn" value="Sign up" />
-                <p class="social-text">Or Sign up with social platforms</p>
+                <p class="social-text">O registrate en nuestras plataformas</p>
                 <div class="social-media">
                     <a href="#" class="social-icon">
                         <i class="fab fa-facebook-f"></i>
@@ -102,26 +109,24 @@
     <div class="panels-container">
         <div class="panel left-panel">
             <div class="content">
-                <h3>New here ?</h3>
+                <h3>Eres nuevo?</h3>
                 <p>
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
-                    ex ratione. Aliquid!
+                   Inicia session con nosotros para conseguir un buen trabajo!
                 </p>
                 <button class="btn transparent" id="sign-up-btn">
-                    Sign up
+                    Registrarte
                 </button>
             </div>
             <img src="img/log.svg" class="image" alt="" />
         </div>
         <div class="panel right-panel">
             <div class="content">
-                <h3>One of us ?</h3>
+                <h3>Ya cuentas con una cuenta?</h3>
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-                    laboriosam ad deleniti.
+                    Perfecto iniciemos session ya!.
                 </p>
                 <button class="btn transparent" id="sign-in-btn">
-                    Sign in
+                    Iniciar Session
                 </button>
             </div>
             <img src="img/register.svg" class="image" alt="" />

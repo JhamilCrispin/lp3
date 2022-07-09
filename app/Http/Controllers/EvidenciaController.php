@@ -4,25 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Evidencia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EvidenciaController extends Controller
 {
-    public function mostrar(){
-        $citas = Evidencia::all();
-        return view('cita.mostrar')->with('citas',$citas);
+    public function mostrar($id){
+        $detalles = Evidencia::paginate(7)->where('idTrabajo', $id);
+        return view('detalles')->with('detalles',$detalles);
     }
     public function formulario(){
-        return view('cita.guardar');
+        return view('detalles');
     }
-    public function Evidencia(Request $request){
+    public function guardar(Request $request,$id){
         $request->validate([
-            "fechaCita"=> "required",
-            "idUsuario"=> "required|",
+            "titulo"=> "required",
+            "descripcion"=> "required|",
         ]);
-        $citas = new Cita();
-        $citas->fechaCita=$request->input('fechaCita');
-        $citas->idUsuario=$request->input('idUsuario');
-        $citas->save();
-        return redirect("cita/mostrar");
+        $detalles = new Evidencia();
+        $detalles->titulo=$request->input('titulo');
+        $detalles->descripcion=$request->input('descripcion');
+        $detalles->fecha=now();
+        $detalles->idTrabajo=$id;
+        $detalles->save();
+        return redirect(route('detalles.mostrar',$id));
     }
 }

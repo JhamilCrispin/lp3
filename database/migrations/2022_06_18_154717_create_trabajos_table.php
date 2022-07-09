@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('trabajos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('trabajo');
             $table->string('descripcion');
             $table->string('experiencia');
             $table->string('categoria');
+            $table->bigInteger('precio');
+            $table->string('img');
             $table->foreignId('idUsuario')->constrained('users');
         });
     }

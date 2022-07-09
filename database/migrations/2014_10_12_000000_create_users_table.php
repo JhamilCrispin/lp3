@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->date('fechaNA');
             $table->string('tipo');
+            $table->string('empresa');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

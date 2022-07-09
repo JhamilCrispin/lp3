@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Responsive E-Commerce Website Design Tutorial</title>
-
+    <title>HuanuCorked</title>
+    <!--=============== BOXICONS ===============-->
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
     <!-- owl carousel css file cdn link  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
 
@@ -46,18 +47,26 @@
 
         <nav class="navbar">
             <ul>
-                <li><a class="active" href="#home">Inicio</a></li>
-                <li><a href="#arrival">Trabajos</a></li>
-                <li><a href="#featured">Empresas</a></li>
-                <li><a href="#gallery">Tipos</a></li>
+                <li><a class="active" href="{{route('home')}}">Inicio</a></li>
+                <li><a href=""></a></li>
+                @if(Auth::user()->tipo =='empresa')
+                <li><a href="{{route('administrador.mostrar')}}">Contratar Personal</a></li>
+                @endif
+                <li><a href="{{route('trabajos.ver')}}">Trabajos</a></li>
                 <li><a href="#deal">Otros</a></li>
             </ul>
         </nav>
 
         <div class="icons">
-            <a href="#" class="fas fa-heart"></a>
+            <h3 for="search" class="">{{Auth::user()->tipo}}</h3>
             <a href="#" class="fas fa-shopping-cart"></a>
-            <a href="#" class="fas fa-user"></a>
+            <a class="nav__link" href="{{ route('logout') }}" onclick="event.preventDefault();
+                        document.getElementById('logout-form').submit();">
+                <i class='bx bxs-log-out-circle' ></i> <span class="nav__name"></span>
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
 
         </div>
 
@@ -73,8 +82,8 @@
 
 <section class="newsletter">
 
-    <h1>newsletter</h1>
-    <p>get in touch for latest discounts and updates</p>
+    <h1>Notificaciones en tu correo</h1>
+    <p>Introdusca su correo</p>
     <form action="">
         <input type="email" placeholder="enter your email">
         <input type="submit" class="btn">
@@ -88,13 +97,13 @@
 
         <div class="box">
             <a href="#" class="logo"> <i class="fas fa-shopping-bag"></i>  HuanuCorked </a>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique expedita molestiae distinctio facere beatae velit, maiores ullam molestias necessitatibus sapiente.</p>
+            <p>Una página diseñada para sus necesidades laborales con la finalidad de dar oportunidades para todos los que deseen publicar en nuestra plataforma.</p>
         </div>
 
         <div class="box">
             <h3>links</h3>
-            <a href="#">inicio</a>
-            <a href="#">Trabajos</a>
+            <a href="/home">inicio</a>
+            <a href="">Trabajos</a>
             <a href="#">Empresas</a>
             <a href="#">Tipos</a>
             <a href="#">Otros</a>
@@ -120,6 +129,7 @@
 
 </section>
 <!-- footer section ends -->
+
 
 <!-- jquery cdn link  -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

@@ -1,55 +1,180 @@
 @extends('layouts.app')
 @section('content')
 <!-- arrival section starts  -->
+<!-- gallery section starts  -->
 
-<section class="arrival gallery"  id="gallery"><!-- id="arrival"/-->
+<section class="gallery" id="gallery">
 
-    <h1 class="heading"> <span>Trabajos <button type="button" class="btn btn-success pull-right" data-bs-toggle="modal" data-bs-target="#insertModal"> <i  class="fas fa-plus-square"></i></button> </span> </h1>
+    <h1 class="heading"> <span> product gallery </span><button type="button" class="btn btn-success pull-right" data-bs-toggle="modal"
+                                                               data-bs-target="#insertModal">Agregar
+        </button> </h1>
+
     <ul class="controls">
         <li class="btn button-active" data-filter="all">all</li>
-        <li class="btn" data-filter="phone">Pesado</li>
-        <li class="btn" data-filter="laptop">Cuidado</li>
-        <li class="btn" data-filter="headphone">Hogar</li>
-        <li class="btn" data-filter="shoes">Especializado</li>
+        <li class="btn" data-filter="pesado">pesado</li>
+        <li class="btn" data-filter="hogar">hogar</li>
+        <li class="btn" data-filter="cuidado">cuidado</li>
+        <li class="btn" data-filter="profesional">profesional</li>
+        <li class="btn" data-filter="{{Auth::user()->id}}">Mis trabajos</li>
     </ul>
-    <div class="box-container">
-        @if(count($trabajos)==0)
-            -no hay Mascotas Registradas
-        @endif
-        @foreach ($trabajos as $trabajo)
 
-        <div class="box">
+    <div class="image-container">
+        @foreach($trabajos as $trabajo)
+        <div class="box {{$trabajo->categoria}}">
+            <a href=" {{route('publicacion',$trabajo->id)}}">
             <div class="image">
-                <img src="images/arr-img1.png" alt="">
-            </div>
+                <img src="{{asset($trabajo->img)}}" alt="">
+            </div></a>
             <div class="info">
-                <h3>{{$trabajo['nombre']}}</h3>
-                <p>{{$trabajo['descripcion']}}</p>
                 <div class="subInfo">
-                    @if($trabajo['experiencia']=="si")
-                    <strong class="price"> {{$trabajo['experiencia']}} Experiencia <span></span> </strong>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half"></i>
-                        </div>
-                    @else
-                        <strong class="price">  <span>experiencia: {{$trabajo['experiencia']}} </span> </strong>
-                    @endif
+                    <h3>{{$trabajo->trabajo}}@if(Auth::user()->id==$trabajo->idUsuario)
+                            <a type="submit" style="color: #dedddd"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal{{$trabajo->id}}">
+                                <i class="fas fa-trash"></i></a>
+                        @endif</h3>
 
+                    <strong class="title"><p>{{$trabajo->categoria}}</p></strong>
+                    @if(Auth::user()->id==$trabajo->idUsuario)
+                        <button href="" class="btn btn-warning" data-bs-toggle="modal"
+                                data-bs-target="#editModal{{$trabajo->id}}">
+                            <i class="fas fa-edit"></i></button>
+                    @endif
+                </div>
+                <div class="subInfo">
+
+                    <p>{{$trabajo->descripcion}}</p>
+                    <strong class="price"><span>S/.{{$trabajo->precio}}</span> </strong>
+                    @if($trabajo->experiencia=='no')
+                        <p>{{'No cuenta con experiencia'}}</p>
+                    @else
+                        @if($trabajo->precio=='100')
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half"></i>
+                            </div>
+                        @elseif($trabajo->precio=='200')
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half"></i>
+                            </div>
+                        @elseif($trabajo->precio>='300')
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half"></i>
+                            </div>
+                        @endif
+                    @endif
                 </div>
             </div>
-            <div class="overlay">
-                <a href="#" style="--i:1;" class="fas fa-heart"></a>
-                <a href="#" style="--i:2;" class="fas fa-shopping-cart"></a>
-                <a href="#" style="--i:3;" class="fas fa-search"></a>
-            </div>
         </div>
-        @endforeach
+            <div class="modal fade" id="editModal{{$trabajo->id}}" tabindex="-1"
+                 aria-labelledby="editModal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Actualizar
+                                Trabajo</h5>
+                            <button type="button" class="btn-close"
+                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <img src="{{asset($trabajo->img)}}" alt="">
+                        <label class="col-md-4 col-form-label text-md-end"></label>
+                        <form method="post" action="{{route('trabajos.actualizar',$trabajo->id)}}" accept-charset="UTF-8" enctype="multipart/form-data">
+                            {{csrf_field()}} @method('PUT')
+                            <div class="row mb-3">
+                                <label for="trabajo" class="col-md-4 col-form-label text-md-end">{{ __('Nombre de trabajo') }}</label>
+                                <div class="col-md-6">
+                                    <input type="text" name="trabajo" class="form-control @error('trabajo') is-invalid @enderror" value="{{$trabajo->trabajo}}" placeholder="Ingrese Nombre"><br>
+                                    @error('trabajo')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                                <label for="descripcion" class="col-md-4 col-form-label text-md-end">{{ __('descripcion') }}</label>
+                                <div class="col-md-6">
+                                    <input type="text" name="descripcion" class="form-control @error('descripcion') is-invalid @enderror" value="{{$trabajo->descripcion}}" placeholder="Ingrese Descripcion"><br>
+                                    @error('descripcion')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                                <label for="experiencia" class="col-md-4 col-form-label text-md-end">{{ __('experiencia') }}</label>
+                                <div class="col-md-6">
+                                    <select name="experiencia" class="form-control" aria-label=".form-select-sm example">
+                                        <option value="si">si</option>
+                                        <option value="no">no</option>
+                                    </select>
+                                    <label for="categoria" class="col-md-4 col-form-label text-md-end">{{ __('') }}</label>
+                                </div>
 
+                                <label for="precio" class="col-md-4 col-form-label text-md-end">{{ __('precio') }}</label>
+                                <div class="col-md-6">
+                                    <input type="number" name="precio" class="form-control @error('precio') is-invalid @enderror" value="{{$trabajo->precio}}" placeholder="Cuanto desea ganar?"><br>
+                                    @error('precio')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                                <label for="precio" class="col-md-4 col-form-label text-md-end">{{ __('Imagen') }}</label>
+                                <div class="col-md-6">
+                                    <input type="file" name="img" class="form-control @error('img') is-invalid @enderror" value="{{$trabajo->img}}" ><br>
+                                    @error('img')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-primary" value="Guardar">
+                                    {{ __('Guardar') }}
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de Eliminar -->
+            <div class="modal fade" id="deleteModal{{$trabajo->id}}" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModal">Eliminar Registro</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <p>¿Estas seguro de eliminar?</p>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Cerrar</button>
+
+                            <form id="formDelete" action="{{route('trabajos.destroy',$trabajo->id)}}" method="POST">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
+</section>
+
+<!-- gallery section ends -->
     <!-- Modal de Insertar -->
     <div class="modal fade" id="insertModal" tabindex="-1" aria-labelledby="insertModal" aria-hidden="true">
         <div class="modal-dialog">
@@ -60,13 +185,13 @@
                 </div>
 
                 <label class="col-md-4 col-form-label text-md-end"></label>
-                <form method="post" action="{{route('trabajos.guardar')}}">
-                    @csrf
+                <form method="post" action="{{route('trabajos.guardar')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+                    {{csrf_field()}}
                     <div class="row mb-3">
-                        <label for="nombre" class="col-md-4 col-form-label text-md-end">{{ __('Nombre') }}</label>
+                        <label for="trabajo" class="col-md-4 col-form-label text-md-end">{{ __('trabajo') }}</label>
                         <div class="col-md-6">
-                            <input type="text" name="nombre" class="form-control @error('nombre') is-invalid @enderror" value="{{old('nombre')}}" placeholder="Ingrese Nombre"><br>
-                            @error('nombre')
+                            <input type="text" name="trabajo" class="form-control @error('trabajo') is-invalid @enderror" value="{{old('trabajo')}}" placeholder="Ingrese trabajo"><br>
+                            @error('trabajo')
                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -74,7 +199,7 @@
                         </div>
                         <label for="descripcion" class="col-md-4 col-form-label text-md-end">{{ __('descripcion') }}</label>
                         <div class="col-md-6">
-                            <input type="text" name="descripcion" class="form-control @error('descripcion') is-invalid @enderror" value="{{old('descripcion')}}" placeholder="Ingrese tipo"><br>
+                            <input type="text" name="descripcion" class="form-control @error('descripcion') is-invalid @enderror" value="{{old('descripcion')}}" placeholder="Ingrese Descripcion"><br>
                             @error('descripcion')
                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -83,23 +208,42 @@
                         </div>
                         <label for="experiencia" class="col-md-4 col-form-label text-md-end">{{ __('experiencia') }}</label>
                         <div class="col-md-6">
-                            <input type="number" name="experiencia" class="form-control @error('experiencia') is-invalid @enderror" value="{{old('experiencia')}}" placeholder="Ingrese Edad"><br>
-                            @error('experiencia')
-                            <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
+                            <select name="experiencia" class="form-control" aria-label=".form-select-sm example">
+                                <option value="si">si</option>
+                                <option value="no">no</option>
+                            </select>
+                            <label for="categoria" class="col-md-4 col-form-label text-md-end">{{ __('') }}</label>
                         </div>
                         <label for="categoria" class="col-md-4 col-form-label text-md-end">{{ __('categoria') }}</label>
                         <div class="col-md-6">
-                            <input type="text" name="categoria" class="form-control @error('raza') is-invalid @enderror" value="{{old('categoria')}}" placeholder="Ingrese Raza"><br>
-                            @error('categoria')
+                            <select name="categoria" class="form-control" aria-label=".form-select-sm example">
+                                <option selected>Seleccionar tipo</option>
+                                <option value="pesado">pesado</option>
+                                <option value="hogar">hogar</option>
+                                <option value="cuidado">cuidado</option>
+                                <option value="profesional">profesional</option>
+                            </select>
+                            <label for="categoria" class="col-md-4 col-form-label text-md-end">{{ __('') }}</label>
+                        </div>
+
+                        <label for="precio" class="col-md-4 col-form-label text-md-end">{{ __('precio') }}</label>
+                        <div class="col-md-6">
+                            <input type="number" name="precio" class="form-control @error('precio') is-invalid @enderror" value="{{old('precio')}}" placeholder="Cuanto desea ganar?"><br>
+                            @error('precio')
                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                             @enderror
                         </div>
-
+                        <label for="img" class="col-md-4 col-form-label text-md-end">{{ __('IMG') }}</label>
+                        <div class="col-md-6">
+                            <input type="file" name="img" class="form-control @error('img') is-invalid @enderror" value="{{old('img')}}" placeholder=""><br>
+                            @error('img')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
 
                     </div>
                     <div class="modal-footer">
@@ -113,9 +257,6 @@
             </div>
         </div>
     </div>
-    </div>
-    <!-- Modal de Insertar -->
-</section>
 
-<!-- arrival section ends -->
+
 @endsection
